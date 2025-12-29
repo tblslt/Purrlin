@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -20,10 +21,10 @@ public class playerScript : MonoBehaviour
     //jump related stuff
     private float jumpSpeed = 20f;
     public Transform groundCheck;
-    public float groundCheckRadius = .5f;
+    public float groundCheckRadius = .01f;
     public LayerMask groundLayer;
     private bool isTouchingGround;
-    public bool doubleJumpUnlocked = true;
+    public bool doubleJumpUnlocked = false;
     private bool canDJump = true;
 
     //dash related stuff
@@ -35,19 +36,7 @@ public class playerScript : MonoBehaviour
     Vector2 moveDirection = Vector2.zero;
     public int facingDirection = 1;
 
-    //combat stuff
     public Spell queuedSpell = null;//when inputs are put in during an animation, cast this next, helps flow of gameplay
-    public int maxMana = 10;
-    public int mana = 10;
-    public int manaRegen = 2;
-
-    public int maxHealth = 9;
-    public int health = 9;
-    //stat modifiers
-    public float durationMultiplier = 1f;
-    public float damageMultiplier = 1f;
-
-    //Spell Hitboxes
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -88,6 +77,7 @@ public class playerScript : MonoBehaviour
             }
             else if (doubleJumpUnlocked && canDJump)
             {
+                Debug.Log("djump");
                 //if in the air and double jump is availible
                 canDJump = false;
                 rb.linearVelocityY = jumpSpeed;
@@ -104,10 +94,12 @@ public class playerScript : MonoBehaviour
             facingDirection = -1;
         }
 
-        if (playerDash.WasPerformedThisFrame() && canDash && canMove)
+        if (playerDash.WasPerformedThisFrame() && dashUnlocked && canDash && canMove)
         {
             StartCoroutine(Dash());
         }
+
+        
     }
 
     private void FixedUpdate()

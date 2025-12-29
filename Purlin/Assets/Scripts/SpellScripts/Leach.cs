@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering;
 public class Leach : MonoBehaviour, Spell
 {
-    playerScript player;
+    SpellCaster sc;
     Coroutine activeCoroutine = null;
     public GameObject hitbox;
     public int baseDamage = 1;
@@ -15,11 +15,10 @@ public class Leach : MonoBehaviour, Spell
     int heal = 1;
     void Awake()
     {
-        player = GetComponentInParent<playerScript>();
+        sc = GetComponentInParent<SpellCaster>();
     }
     void Spell.Cancel()
     {
-        player.queuedSpell = null;
         if (activeCoroutine != null)
         {
             hitbox = null;
@@ -30,7 +29,6 @@ public class Leach : MonoBehaviour, Spell
     }
     void Spell.Cast()
     {
-        player.queuedSpell = null;
         if (activeCoroutine == null)
         {
             activeCoroutine = StartCoroutine(Casting());
@@ -40,20 +38,20 @@ public class Leach : MonoBehaviour, Spell
     IEnumerator Casting()
     {
 
-        if (manaCost > player.mana) { activeCoroutine = null; yield break; }
-        player.mana -= manaCost;
+        if (manaCost > sc.mana) { activeCoroutine = null; yield break; }
+        sc.mana -= manaCost;
         float startTime = Time.time;
 
         //TODO: play animation
         //if (enemy in hitbox collider)
         {
             //TODO: damage all enemy touching
-            if (player.health < player.maxHealth)
+            if (sc.health < sc.maxHealth)
             {
-                player.health += 1;
+                sc.health += 1;
             }
         }
-        while (Time.time < startTime + baseCastTime * player.durationMultiplier)
+        while (Time.time < startTime + baseCastTime * sc.durationMultiplier)
         {
 
             yield return null;

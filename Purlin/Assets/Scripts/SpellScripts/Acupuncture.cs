@@ -6,7 +6,7 @@ using UnityEngine;
 //needles made of blood erupt from your face that fan out like a shotgun, costs health instead of mana
 public class Acupuncture : MonoBehaviour, Spell
 {
-    playerScript player;
+    SpellCaster sc;
     Coroutine activeCoroutine = null;
     public GameObject needles;
     public int baseDamage = 1;
@@ -15,24 +15,21 @@ public class Acupuncture : MonoBehaviour, Spell
     float baseCastTime = .2f;
     void Awake()
     {
-        player = GetComponentInParent<playerScript>();
+        sc = GetComponentInParent<SpellCaster>();
     }
     void Spell.Cancel()
     {
-        player.queuedSpell = null;
         if (activeCoroutine != null)
         {
             StopCoroutine(activeCoroutine);
-            player.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
+            sc.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
             activeCoroutine = null;
         }
     }
     void Spell.Cast()
     {
-        player.queuedSpell = null;
         if (activeCoroutine == null)
         {
-            player.canMove = false;
             activeCoroutine = StartCoroutine(Casting());
         }
     }
@@ -40,25 +37,25 @@ public class Acupuncture : MonoBehaviour, Spell
     IEnumerator Casting()
     {
 
-        if (healthCost >= player.health) { activeCoroutine = null; yield break; }
-        player.health -= healthCost;
+        if (healthCost >= sc.health) { activeCoroutine = null; yield break; }
+        sc.health -= healthCost;
 
         //TODO: play animation
         //if (enemy in hitbox collider)
         {
             //TODO: damage all enemy touching
-            if (player.health < player.maxHealth)
+            if (sc.health < sc.maxHealth)
             {
-                player.health += 1;
+                sc.health += 1;
             }
         }
         float startTime = Time.time;
-        player.rb.constraints |= RigidbodyConstraints2D.FreezePosition;
-        while (Time.time < startTime + baseCastTime * player.durationMultiplier)
+        sc.rb.constraints |= RigidbodyConstraints2D.FreezePosition;
+        while (Time.time < startTime + baseCastTime * sc.durationMultiplier)
         {
             yield return null;
         }
-        player.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
+        sc.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
         //TODO: set animation back
     }
 }

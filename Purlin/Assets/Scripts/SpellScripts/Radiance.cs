@@ -6,7 +6,7 @@ using UnityEditor.Rendering;
 
 public class Radiance : MonoBehaviour, Spell
 {
-    playerScript player;
+    SpellCaster sc;
     Coroutine activeCoroutine = null;
     public GameObject hitbox;
     public int baseDamage = 1;
@@ -16,12 +16,11 @@ public class Radiance : MonoBehaviour, Spell
 
     void Awake()
     {
-        player = GetComponentInParent<playerScript>();
+        sc = GetComponentInParent<SpellCaster>();
     }
 
     void Spell.Cancel()
     {
-        player.queuedSpell = null;
         if (activeCoroutine != null)
         {
             hitbox = null;
@@ -32,7 +31,6 @@ public class Radiance : MonoBehaviour, Spell
     }
     void Spell.Cast()
     {
-        player.queuedSpell = null;
         if (activeCoroutine != null)
         {
             hitbox = null;
@@ -58,14 +56,14 @@ public class Radiance : MonoBehaviour, Spell
             }
             //else
             {
-                if (manaCost > player.mana)
+                if (manaCost > sc.mana)
                 {
                     //TODO: destory item in hitbox
                     hitbox = null;
                     activeCoroutine = null;
                     yield break;
                 }
-                yield return new WaitForSeconds(baseCastTime * player.durationMultiplier);
+                yield return new WaitForSeconds(baseCastTime * sc.durationMultiplier);
             }
         }
     }

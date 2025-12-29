@@ -8,7 +8,6 @@ public class SpellCaster : MonoBehaviour
     Spell[] spellOptions;
     public Rigidbody2D rb;
 
-    public Spell queuedSpell = null;//when inputs are put in during an animation, cast this next, helps flow of gameplay
     public int maxMana = 10;
     public int mana = 10;
     public int manaRegen = 2;
