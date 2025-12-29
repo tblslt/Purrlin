@@ -1,19 +1,26 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 
-public class playerScript : MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
+    public SpellCaster sc;
     
     public InputAction playerMovementX;
     public InputAction playerJump;
     public InputAction playerDash;
+
+    public InputAction[] spellInputs;
+    public int[] spellChoice = { 0, 1, 2, 3 };
+
+    
 
     private float moveSpeed = 5f;
     public bool canMove = true;
@@ -46,6 +53,10 @@ public class playerScript : MonoBehaviour
 
     private void OnEnable()
     {
+        foreach(InputAction spellInput in spellInputs)
+        {
+            spellInput.Enable();
+        }
         playerMovementX.Enable();
         playerJump.Enable();
         playerDash.Enable();
@@ -53,6 +64,10 @@ public class playerScript : MonoBehaviour
 
     private void OnDisable()
     {
+        foreach (InputAction spellInput in spellInputs)
+        {
+            spellInput.Disable();
+        }
         playerMovementX.Disable();
         playerJump.Disable();
         playerDash.Disable();
@@ -61,6 +76,15 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        for (int i = 0; i < spellInputs.Length; i++)
+        {
+            if (spellInputs[i].WasPerformedThisFrame())
+            {
+                Debug.Log("cast:" + spellInputs[i]);
+                sc.QueueSpell(spellChoice[i]);
+                break;
+            }
+        }
         isTouchingGround = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         
         if(!canDJump && isTouchingGround)
@@ -77,7 +101,6 @@ public class playerScript : MonoBehaviour
             }
             else if (doubleJumpUnlocked && canDJump)
             {
-                Debug.Log("djump");
                 //if in the air and double jump is availible
                 canDJump = false;
                 rb.linearVelocityY = jumpSpeed;

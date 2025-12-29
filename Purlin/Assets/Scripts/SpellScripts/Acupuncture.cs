@@ -7,7 +7,7 @@ using UnityEngine;
 public class Acupuncture : MonoBehaviour, Spell
 {
     SpellCaster sc;
-    Coroutine activeCoroutine = null;
+    public Coroutine activeCoroutine { get; private set; }
     public GameObject needles;
     public int baseDamage = 1;
 
@@ -15,6 +15,7 @@ public class Acupuncture : MonoBehaviour, Spell
     float baseCastTime = .2f;
     void Awake()
     {
+        activeCoroutine = null;
         sc = GetComponentInParent<SpellCaster>();
     }
     void Spell.Cancel()
@@ -26,12 +27,10 @@ public class Acupuncture : MonoBehaviour, Spell
             activeCoroutine = null;
         }
     }
-    void Spell.Cast()
+    bool Spell.Cast()
     {
-        if (activeCoroutine == null)
-        {
-            activeCoroutine = StartCoroutine(Casting());
-        }
+        activeCoroutine = StartCoroutine(Casting());
+        return true;
     }
 
     IEnumerator Casting()

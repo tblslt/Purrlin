@@ -8,7 +8,7 @@ public class Heal : MonoBehaviour, Spell
 {
     SpellCaster sc;
     bool cancelled = false;
-    Coroutine activeCoroutine = null;
+    public Coroutine activeCoroutine { get; private set; }
     public int manaCost = 10;
     public float baseCastTime = 2;
     void Awake()
@@ -26,9 +26,10 @@ public class Heal : MonoBehaviour, Spell
         }
     }
 
-    void Spell.Cast()
+    bool Spell.Cast()
     {
         activeCoroutine = StartCoroutine(Casting());
+        return true;
     }
     IEnumerator Casting()
     {

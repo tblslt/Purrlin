@@ -7,7 +7,7 @@ using UnityEditor.Rendering;
 public class Radiance : MonoBehaviour, Spell
 {
     SpellCaster sc;
-    Coroutine activeCoroutine = null;
+    public Coroutine activeCoroutine { get; private set; }
     public GameObject hitbox;
     public int baseDamage = 1;
 
@@ -23,17 +23,17 @@ public class Radiance : MonoBehaviour, Spell
     {
         if (activeCoroutine != null)
         {
-            hitbox = null;
+            hitbox.SetActive(false);
             //TODO: disable hitbox and animations
             StopCoroutine(activeCoroutine);
             activeCoroutine = null;
         }
     }
-    void Spell.Cast()
+    bool Spell.Cast()
     {
         if (activeCoroutine != null)
         {
-            hitbox = null;
+            hitbox.SetActive(false);
             //TODO: disable hitbox and animations
             StopCoroutine(activeCoroutine);
             activeCoroutine = null;
@@ -42,29 +42,37 @@ public class Radiance : MonoBehaviour, Spell
         {
             activeCoroutine = StartCoroutine(Casting());
         }
+        return false;
 
     }
     IEnumerator Casting()
     {
-
+        if (manaCost > sc.mana)
+        {
+            //TODO: destory item in hitbox
+            hitbox.SetActive(false);
+            activeCoroutine = null;
+            yield break;
+        }
+        hitbox.SetActive(true);
         while (true)
         {
 
             //if (enemy in hitbox collider)
-            {
+            //{
                 //TODO: damage all enemy touching
-            }
+            //}
             //else
-            {
+            //{
                 if (manaCost > sc.mana)
                 {
                     //TODO: destory item in hitbox
-                    hitbox = null;
+                    hitbox.SetActive(false);
                     activeCoroutine = null;
                     yield break;
                 }
                 yield return new WaitForSeconds(baseCastTime * sc.durationMultiplier);
-            }
+            //}
         }
     }
 }

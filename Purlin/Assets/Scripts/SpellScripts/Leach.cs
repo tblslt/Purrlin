@@ -6,7 +6,7 @@ using UnityEditor.Rendering;
 public class Leach : MonoBehaviour, Spell
 {
     SpellCaster sc;
-    Coroutine activeCoroutine = null;
+    public Coroutine activeCoroutine { get; private set; }
     public GameObject hitbox;
     public int baseDamage = 1;
 
@@ -27,12 +27,10 @@ public class Leach : MonoBehaviour, Spell
             activeCoroutine = null;
         }
     }
-    void Spell.Cast()
+    bool Spell.Cast()
     {
-        if (activeCoroutine == null)
-        {
-            activeCoroutine = StartCoroutine(Casting());
-        }
+        activeCoroutine = StartCoroutine(Casting());
+        return true;
     }
 
     IEnumerator Casting()

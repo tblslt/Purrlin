@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SpellCaster : MonoBehaviour
 {
+    int spellQueue = -1;
+    int activeSpell = -1;
     Spell[] spellOptions;
     public Rigidbody2D rb;
 
@@ -23,14 +25,44 @@ public class SpellCaster : MonoBehaviour
     {
         spellOptions = GetComponents<Spell>();
     }
-    
+
+    private void Update()
+    {
+        if(activeSpell != -1)
+        {
+            if(spellOptions[activeSpell].activeCoroutine == null)
+            {
+                activeSpell = -1;
+            }
+        }
+        if(activeSpell == -1 && spellQueue != -1)
+        {
+            CastSpell(spellQueue);
+            spellQueue = -1;
+        }
+    }
+
+    public void QueueSpell(int i)
+    {
+        spellQueue = i;
+    }
+
     void CastSpell(int i)
     {
-        spellOptions[i].Cast();
+        Debug.Log("attempt cast" + i);
+        
+            if (spellOptions[i].Cast())
+            {
+                activeSpell = i;
+            }
+        
     }
     void CancelSpell(int i)
     {
-        spellOptions[i].Cancel();
+        if (spellOptions.Length! > i + 1)
+        {
+            spellOptions[i].Cancel();
+        }
     }
     void CancelAllSpell()
     {
@@ -39,5 +71,4 @@ public class SpellCaster : MonoBehaviour
             spell.Cancel();
         }
     }
-    
 }
