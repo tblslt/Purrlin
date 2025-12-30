@@ -30,6 +30,7 @@ public class SpellCaster : MonoBehaviour
     {
         if(activeSpell != -1)
         {
+            print(activeSpell + "," + spellQueue + "," + spellOptions[activeSpell].activeCoroutine == null);
             if(spellOptions[activeSpell].activeCoroutine == null)
             {
                 activeSpell = -1;

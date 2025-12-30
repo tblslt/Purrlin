@@ -50,11 +50,9 @@ public class Acupuncture : MonoBehaviour, Spell
         }
         float startTime = Time.time;
         sc.rb.constraints |= RigidbodyConstraints2D.FreezePosition;
-        while (Time.time < startTime + baseCastTime * sc.durationMultiplier)
-        {
-            yield return null;
-        }
+        yield return new WaitForSeconds(baseCastTime * sc.durationMultiplier);
         sc.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
         //TODO: set animation back
+        activeCoroutine = null;
     }
 }

@@ -40,12 +40,9 @@ public class Heal : MonoBehaviour, Spell
 
         //TODO: play heal animation
         sc.rb.constraints |= RigidbodyConstraints2D.FreezePosition;
-        while (Time.time < startTime + baseCastTime * sc.durationMultiplier)
-        {
-            yield return null;
-        }
+        yield return new WaitForSeconds(baseCastTime * sc.durationMultiplier);
         sc.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
-
+        activeCoroutine = null;
         //TODO: set animation back
     }
 

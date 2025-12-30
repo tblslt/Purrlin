@@ -49,11 +49,8 @@ public class Leach : MonoBehaviour, Spell
                 sc.health += 1;
             }
         }
-        while (Time.time < startTime + baseCastTime * sc.durationMultiplier)
-        {
-
-            yield return null;
-        }
+        yield return new WaitForSeconds(baseCastTime * sc.durationMultiplier);
         //TODO: set animation back
+        activeCoroutine = null;
     }
 }

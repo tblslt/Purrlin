@@ -40,12 +40,10 @@ public class Counter : MonoBehaviour, Spell
 
         sc.rb.constraints |= RigidbodyConstraints2D.FreezePosition;
         //TODO: play counter animation
-        while (Time.time < startTime + CastDuration * sc.durationMultiplier)
-        {
-            yield return null;
-        }
+        yield return new WaitForSeconds(CastDuration * sc.durationMultiplier);
 
         sc.rb.constraints &= ~RigidbodyConstraints2D.FreezePosition;
+        activeCoroutine = null;
         //TODO: set animation back
     }
 }
