@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
+    public Animator animator;
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
     public SpellCaster sc;
@@ -76,6 +77,9 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animator.SetFloat("speedX", Mathf.Abs(rb.linearVelocityX));
+        animator.SetFloat("velocityY", rb.linearVelocityY);
+
         for (int i = 0; i < spellInputs.Length; i++)
         {
             if (spellInputs[i].WasPerformedThisFrame())
@@ -97,10 +101,12 @@ public class PlayerScript : MonoBehaviour
         {
             if (isTouchingGround)
             {
+                animator.SetTrigger("jump");
                 rb.linearVelocityY = jumpSpeed;
             }
             else if (doubleJumpUnlocked && canDJump)
             {
+                animator.SetTrigger("jump");
                 //if in the air and double jump is availible
                 canDJump = false;
                 rb.linearVelocityY = jumpSpeed;
